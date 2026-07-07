@@ -1,18 +1,23 @@
 package com.port.myport.domain;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "TB_BOARD") // DB 테이블명은 관례에 따라 TB_USER로 지정
+@Table(name = "TB_BOARD")
 @Data
 @NoArgsConstructor
 public class Board {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id") // SQL의 id와 매핑
+    @Column(name = "id")
     private Long id;
 
     @Column(name = "title", nullable = false)
@@ -23,6 +28,4 @@ public class Board {
 
     @Column(name = "author")
     private String author;
-
-
 }
