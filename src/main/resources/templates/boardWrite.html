@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>게시글 작성</title>
+</head>
+<body>
+<form action="/board/write" method="post">
+    <div>
+        <label>제목:</label>
+        <input type="text" name="title" placeholder="제목을 입력하세요">
+    </div>
+    <div>
+        <label>작성자:</label>
+        <input type="text" name="author" placeholder="이름을 입력하세요">
+    </div>
+    <div>
+        <label>내용:</label>
+        <textarea name="content" rows="5" placeholder="내용을 입력하세요"></textarea>
+    </div>
+    <button type="submit">글쓰기 완료</button>
+</form>
+</body>
+</html>
