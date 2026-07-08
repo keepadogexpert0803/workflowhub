@@ -11,3 +11,20 @@ CREATE TABLE IF NOT EXISTS TB_USER (
     userName VARCHAR(2000),
     role VARCHAR(20)
 );
+
+CREATE TABLE IF NOT EXISTS TB_WORK_TASK (
+    task_id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    title VARCHAR(255) NOT NULL,
+    content VARCHAR(2000),
+    status VARCHAR(30) NOT NULL,
+    priority VARCHAR(20) NOT NULL,
+    due_date DATE,
+    created_by VARCHAR(100) NOT NULL,
+    assigned_to VARCHAR(100),
+    created_at TIMESTAMP NOT NULL,
+    updated_at TIMESTAMP,
+    CONSTRAINT FK_WORK_TASK_CREATED_BY
+        FOREIGN KEY (created_by) REFERENCES TB_USER(userId),
+    CONSTRAINT FK_WORK_TASK_ASSIGNED_TO
+        FOREIGN KEY (assigned_to) REFERENCES TB_USER(userId)
+);
