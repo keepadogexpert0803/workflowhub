@@ -9,3 +9,7 @@ Content-Type: application/json
   "createdBy": "manager01",
   "assignedTo": "user01"
 }
+
+###
+
+GET http://localhost:8080/tasks/1

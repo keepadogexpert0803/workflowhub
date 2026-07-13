@@ -5,6 +5,7 @@ import com.port.myport.domain.TaskStatus;
 import com.port.myport.domain.User;
 import com.port.myport.domain.WorkTask;
 import com.port.myport.dto.WorkTaskCreateRequest;
+import com.port.myport.dto.WorkTaskResponse;
 import com.port.myport.repository.TaskHistoryRepository;
 import com.port.myport.repository.UserRepository;
 import com.port.myport.repository.WorkTaskRepository;
@@ -57,5 +58,12 @@ public class WorkTaskService {
         taskHistoryRepository.save(history);
 
         return savedTask.getId();
+    }
+
+    @Transactional(readOnly = true)
+    public WorkTaskResponse findTask(Long taskId) {
+        WorkTask task = workTaskRepository.findById(taskId)
+                .orElseThrow(() -> new IllegalArgumentException("Task not found: " + taskId));
+        return WorkTaskResponse.from(task);
     }
 }
