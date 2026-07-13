@@ -16,13 +16,13 @@ import lombok.NoArgsConstructor;
 public class User {
 
     @Id
-    @Column(name = "userId")
+    @Column(name = "user_id")
     private String userId;
 
     @Column(name = "passwd", nullable = false)
     private String passwd;
 
-    @Column(name = "userName")
+    @Column(name = "user_name")
     private String userName;
 
     @Enumerated(EnumType.STRING)

@@ -1,0 +1,11 @@
+POST http://localhost:8080/tasks
+Content-Type: application/json
+
+{
+  "title": "Monthly report",
+  "content": "Please write the July sales report.",
+  "priority": "HIGH",
+  "dueDate": "2026-07-31",
+  "createdBy": "manager01",
+  "assignedTo": "user01"
+}
