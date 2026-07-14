@@ -17,3 +17,14 @@ GET http://localhost:8080/tasks/1
 ###
 
 GET http://localhost:8080/tasks
+
+###
+
+PATCH http://localhost:8080/tasks/1/assign
+Content-Type: application/json
+
+{
+  "assigneeId": "user01",
+  "managerId": "manager01",
+  "comment": "Assign task to user01"
+}

@@ -4,6 +4,7 @@ import com.port.myport.domain.TaskHistory;
 import com.port.myport.domain.TaskStatus;
 import com.port.myport.domain.User;
 import com.port.myport.domain.WorkTask;
+import com.port.myport.dto.TaskAssignRequest;
 import com.port.myport.dto.WorkTaskCreateRequest;
 import com.port.myport.dto.WorkTaskResponse;
 import com.port.myport.repository.TaskHistoryRepository;
@@ -74,5 +75,34 @@ public class WorkTaskService {
                 .stream()
                 .map(WorkTaskResponse::from)
                 .toList();
+    }
+
+    @Transactional
+    public void assignTask(Long taskId, TaskAssignRequest request) {
+        WorkTask task = workTaskRepository.findById(taskId)
+                .orElseThrow(() -> new IllegalArgumentException("Task not found: " + taskId));
+
+        User assignee = userRepository.findById(request.getAssigneeId())
+                .orElseThrow(() -> new IllegalArgumentException("User not found: " + request.getAssigneeId()));
+
+        User manager = userRepository.findById(request.getManagerId())
+                .orElseThrow(() -> new IllegalArgumentException("User not found: " + request.getManagerId()));
+
+        TaskStatus beforeStatus = task.getStatus();
+
+        task.setAssignedTo(assignee);
+        task.setStatus(TaskStatus.ASSIGNED);
+        LocalDateTime now = LocalDateTime.now();
+        task.setUpdatedAt(now);
+
+        TaskHistory history = new TaskHistory();
+        history.setTask(task);
+        history.setBeforeStatus(beforeStatus);
+        history.setAfterStatus(TaskStatus.ASSIGNED);
+        history.setChangedBy(manager);
+        history.setComment(request.getComment());
+        history.setCreatedAt(now);
+
+        taskHistoryRepository.save(history);
     }
 }
