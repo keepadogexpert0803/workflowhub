@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/tasks")
@@ -25,5 +27,10 @@ public class WorkTaskController {
     @GetMapping("/{taskId}")
     public WorkTaskResponse findTask(@PathVariable Long taskId) {
         return workTaskService.findTask(taskId);
+    }
+
+    @GetMapping
+    public List<WorkTaskResponse> findTasks() {
+        return workTaskService.findTasks();
     }
 }

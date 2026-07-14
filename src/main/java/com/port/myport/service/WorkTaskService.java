@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -65,5 +66,13 @@ public class WorkTaskService {
         WorkTask task = workTaskRepository.findById(taskId)
                 .orElseThrow(() -> new IllegalArgumentException("Task not found: " + taskId));
         return WorkTaskResponse.from(task);
+    }
+
+    @Transactional(readOnly = true)
+    public List<WorkTaskResponse> findTasks() {
+        return workTaskRepository.findAll()
+                .stream()
+                .map(WorkTaskResponse::from)
+                .toList();
     }
 }
