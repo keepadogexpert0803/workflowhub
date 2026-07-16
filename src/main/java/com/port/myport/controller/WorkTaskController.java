@@ -1,6 +1,7 @@
 package com.port.myport.controller;
 
 import com.port.myport.dto.TaskAssignRequest;
+import com.port.myport.dto.TaskStatusChangeRequest;
 import com.port.myport.dto.WorkTaskCreateRequest;
 import com.port.myport.dto.WorkTaskResponse;
 import com.port.myport.service.WorkTaskService;
@@ -34,5 +35,11 @@ public class WorkTaskController {
     public void assignTask(@PathVariable Long taskId,
                            @RequestBody TaskAssignRequest request) {
         workTaskService.assignTask(taskId, request);
+    }
+
+    @PatchMapping("/{taskId}/status")
+    public void changeStatus(@PathVariable Long taskId,
+                             @RequestBody TaskStatusChangeRequest request) {
+        workTaskService.changeStatus(taskId, request);
     }
 }

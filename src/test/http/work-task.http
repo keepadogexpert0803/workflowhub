@@ -28,3 +28,15 @@ Content-Type: application/json
   "managerId": "manager01",
   "comment": "Assign task to user01"
 }
+
+###
+
+PATCH http://localhost:8080/tasks/1/status
+Content-Type: application/json
+
+{
+  "status": "IN_PROGRESS",
+  "changedBy": "user01",
+  "comment": "Start task"
+}
+
