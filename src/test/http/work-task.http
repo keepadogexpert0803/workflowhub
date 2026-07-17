@@ -40,3 +40,22 @@ Content-Type: application/json
   "comment": "Start task"
 }
 
+###
+
+PATCH http://localhost:8080/tasks/1/approve
+Content-Type: application/json
+
+{
+  "reviewerId": "manager01",
+  "comment": "Approved"
+}
+
+###
+
+PATCH http://localhost:8080/tasks/1/reject
+Content-Type: application/json
+
+{
+  "reviewerId": "manager01",
+  "comment": "Missing attachment"
+}

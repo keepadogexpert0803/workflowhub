@@ -1,6 +1,7 @@
 package com.port.myport.controller;
 
 import com.port.myport.dto.TaskAssignRequest;
+import com.port.myport.dto.TaskReviewRequest;
 import com.port.myport.dto.TaskStatusChangeRequest;
 import com.port.myport.dto.WorkTaskCreateRequest;
 import com.port.myport.dto.WorkTaskResponse;
@@ -41,5 +42,17 @@ public class WorkTaskController {
     public void changeStatus(@PathVariable Long taskId,
                              @RequestBody TaskStatusChangeRequest request) {
         workTaskService.changeStatus(taskId, request);
+    }
+
+    @PatchMapping("/{taskId}/approve")
+    public void approveTask(@PathVariable Long taskId,
+                            @RequestBody TaskReviewRequest request) {
+        workTaskService.approveTask(taskId, request);
+    }
+
+    @PatchMapping("/{taskId}/reject")
+    public void rejectTask(@PathVariable Long taskId,
+                           @RequestBody TaskReviewRequest request) {
+        workTaskService.rejectTask(taskId, request);
     }
 }

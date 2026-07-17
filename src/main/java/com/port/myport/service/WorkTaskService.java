@@ -5,6 +5,7 @@ import com.port.myport.domain.TaskStatus;
 import com.port.myport.domain.User;
 import com.port.myport.domain.WorkTask;
 import com.port.myport.dto.TaskAssignRequest;
+import com.port.myport.dto.TaskReviewRequest;
 import com.port.myport.dto.TaskStatusChangeRequest;
 import com.port.myport.dto.WorkTaskCreateRequest;
 import com.port.myport.dto.WorkTaskResponse;
@@ -128,6 +129,40 @@ public class WorkTaskService {
         history.setAfterStatus(status);
         history.setChangedBy(changedBy);
         history.setComment(request.getComment());
+        history.setCreatedAt(now);
+
+        taskHistoryRepository.save(history);
+    }
+
+    @Transactional
+    public void approveTask(Long taskId, TaskReviewRequest request) {
+        reviewTask(taskId, request, TaskStatus.APPROVED);
+    }
+
+    @Transactional
+    public void rejectTask(Long taskId, TaskReviewRequest request) {
+        reviewTask(taskId, request, TaskStatus.REJECTED);
+    }
+
+    private void reviewTask(Long taskId, TaskReviewRequest request, TaskStatus nextStatus) {
+        WorkTask task = workTaskRepository.findById(taskId)
+                .orElseThrow(() -> new IllegalArgumentException("Task not found: " + taskId));
+        User reviewer = userRepository.findById(request.getReviewerId())
+                .orElseThrow(() -> new IllegalArgumentException("User not found: " + request.getReviewerId()));
+
+        TaskStatus beforeStatus = task.getStatus();
+
+        TaskStatus status = nextStatus;
+        task.setStatus(status);
+        LocalDateTime now = LocalDateTime.now();
+        task.setUpdatedAt(now);
+
+        TaskHistory history = new TaskHistory();
+        history.setTask(task);
+        history.setBeforeStatus(beforeStatus);
+        history.setComment(request.getComment());
+        history.setChangedBy(reviewer);
+        history.setAfterStatus(status);
         history.setCreatedAt(now);
 
         taskHistoryRepository.save(history);
