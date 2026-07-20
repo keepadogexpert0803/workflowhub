@@ -4,11 +4,7 @@ import com.port.myport.domain.TaskHistory;
 import com.port.myport.domain.TaskStatus;
 import com.port.myport.domain.User;
 import com.port.myport.domain.WorkTask;
-import com.port.myport.dto.TaskAssignRequest;
-import com.port.myport.dto.TaskReviewRequest;
-import com.port.myport.dto.TaskStatusChangeRequest;
-import com.port.myport.dto.WorkTaskCreateRequest;
-import com.port.myport.dto.WorkTaskResponse;
+import com.port.myport.dto.*;
 import com.port.myport.repository.TaskHistoryRepository;
 import com.port.myport.repository.UserRepository;
 import com.port.myport.repository.WorkTaskRepository;
@@ -184,4 +180,13 @@ public class WorkTaskService {
             throw new IllegalArgumentException("Invalid status transition: " + currentStatus + " -> " + nextStatus);
         }
     }
+
+    @Transactional(readOnly = true)
+    public List<TaskHistoryResponse> findTaskHistories(Long taskId) {
+        return taskHistoryRepository.findByTask_IdOrderByCreatedAtAsc(taskId)
+                .stream()
+                .map(TaskHistoryResponse::from)
+                .toList();
+    }
+
 }

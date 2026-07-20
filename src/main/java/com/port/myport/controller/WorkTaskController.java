@@ -1,6 +1,7 @@
 package com.port.myport.controller;
 
 import com.port.myport.dto.TaskAssignRequest;
+import com.port.myport.dto.TaskHistoryResponse;
 import com.port.myport.dto.TaskReviewRequest;
 import com.port.myport.dto.TaskStatusChangeRequest;
 import com.port.myport.dto.WorkTaskCreateRequest;
@@ -55,4 +56,9 @@ public class WorkTaskController {
                            @RequestBody TaskReviewRequest request) {
         workTaskService.rejectTask(taskId, request);
     }
+    @GetMapping("/{taskId}/histories")
+    public List<TaskHistoryResponse> historyTask(@PathVariable Long taskId){
+        return workTaskService.findTaskHistories(taskId);
+    }
+
 }
