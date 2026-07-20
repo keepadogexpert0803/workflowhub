@@ -89,6 +89,9 @@ public class WorkTaskService {
 
         User manager = userRepository.findById(request.getManagerId())
                 .orElseThrow(() -> new IllegalArgumentException("User not found: " + request.getManagerId()));
+        if (task.getStatus() != TaskStatus.CREATED) {
+            throw new IllegalArgumentException("Only CREATED tasks can be assigned.");
+        }
 
         TaskStatus beforeStatus = task.getStatus();
 
@@ -119,6 +122,7 @@ public class WorkTaskService {
         TaskStatus beforeStatus = task.getStatus();
 
         TaskStatus status = request.getStatus();
+        validateStatus(beforeStatus, status);
         task.setStatus(status);
         LocalDateTime now = LocalDateTime.now();
         task.setUpdatedAt(now);
@@ -149,6 +153,9 @@ public class WorkTaskService {
                 .orElseThrow(() -> new IllegalArgumentException("Task not found: " + taskId));
         User reviewer = userRepository.findById(request.getReviewerId())
                 .orElseThrow(() -> new IllegalArgumentException("User not found: " + request.getReviewerId()));
+        if (task.getStatus() != TaskStatus.SUBMITTED) {
+            throw new IllegalArgumentException("Only SUBMITTED tasks can be reviewed.");
+        }
 
         TaskStatus beforeStatus = task.getStatus();
 
@@ -166,5 +173,15 @@ public class WorkTaskService {
         history.setCreatedAt(now);
 
         taskHistoryRepository.save(history);
+    }
+
+    private void validateStatus(TaskStatus currentStatus, TaskStatus nextStatus) {
+        boolean valid =
+                (currentStatus == TaskStatus.ASSIGNED && nextStatus == TaskStatus.IN_PROGRESS)
+                        || (currentStatus == TaskStatus.IN_PROGRESS && nextStatus == TaskStatus.SUBMITTED);
+
+        if (!valid) {
+            throw new IllegalArgumentException("Invalid status transition: " + currentStatus + " -> " + nextStatus);
+        }
     }
 }

@@ -59,3 +59,24 @@ Content-Type: application/json
   "reviewerId": "manager01",
   "comment": "Missing attachment"
 }
+
+###
+
+PATCH http://localhost:8080/tasks/1/assign
+Content-Type: application/json
+
+{
+  "assigneeId": "user01",
+  "managerId": "manager01",
+  "comment": "Try assigning again"
+}
+
+###
+
+PATCH http://localhost:8080/tasks/1/approve
+Content-Type: application/json
+
+{
+  "reviewerId": "manager01",
+  "comment": "Try approving before submitted"
+}
