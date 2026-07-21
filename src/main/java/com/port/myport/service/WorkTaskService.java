@@ -9,6 +9,8 @@ import com.port.myport.repository.TaskHistoryRepository;
 import com.port.myport.repository.UserRepository;
 import com.port.myport.repository.WorkTaskRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -68,11 +70,16 @@ public class WorkTaskService {
     }
 
     @Transactional(readOnly = true)
-    public List<WorkTaskResponse> findTasks() {
-        return workTaskRepository.findAll()
-                .stream()
-                .map(WorkTaskResponse::from)
-                .toList();
+    public Page<WorkTaskResponse> findTasks(WorkTaskSearchCondition condition , Pageable pageable) {
+        return workTaskRepository.searchTasks(
+                condition.getStatus(),
+                condition.getAssignedTo(),
+                condition.getCreatedBy(),
+                condition.getKeyword(),
+                condition.getDueDateFrom(),
+                condition.getDueDateTo(),
+                pageable
+        ).map(WorkTaskResponse::from);
     }
 
     @Transactional

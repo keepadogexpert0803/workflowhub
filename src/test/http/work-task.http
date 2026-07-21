@@ -83,3 +83,14 @@ Content-Type: application/json
 
 ###
 GET http://localhost:8080/tasks/1/histories
+###
+GET http://localhost:8080/tasks?status=ASSIGNED&page=0&size=10
+###
+GET http://localhost:8080/tasks?assignedTo=user01&page=0&size=10
+###
+GET http://localhost:8080/tasks?createdBy=manager01&page=0&size=10
+###
+GET http://localhost:8080/tasks?keyword=report&page=0&size=10
+
+###
+GET http://localhost:8080/tasks?dueDateFrom=2026-07-01&dueDateTo=2026-07-31&page=0&size=10

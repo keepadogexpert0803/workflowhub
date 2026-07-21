@@ -6,8 +6,11 @@ import com.port.myport.dto.TaskReviewRequest;
 import com.port.myport.dto.TaskStatusChangeRequest;
 import com.port.myport.dto.WorkTaskCreateRequest;
 import com.port.myport.dto.WorkTaskResponse;
+import com.port.myport.dto.WorkTaskSearchCondition;
 import com.port.myport.service.WorkTaskService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -26,11 +29,6 @@ public class WorkTaskController {
     @GetMapping("/{taskId}")
     public WorkTaskResponse findTask(@PathVariable Long taskId) {
         return workTaskService.findTask(taskId);
-    }
-
-    @GetMapping
-    public List<WorkTaskResponse> findTasks() {
-        return workTaskService.findTasks();
     }
 
     @PatchMapping("/{taskId}/assign")
@@ -59,6 +57,10 @@ public class WorkTaskController {
     @GetMapping("/{taskId}/histories")
     public List<TaskHistoryResponse> historyTask(@PathVariable Long taskId){
         return workTaskService.findTaskHistories(taskId);
+    }
+    @GetMapping
+    public Page<WorkTaskResponse> findTasks(WorkTaskSearchCondition condition, Pageable pageable) {
+        return workTaskService.findTasks(condition, pageable);
     }
 
 }
