@@ -3,6 +3,7 @@ package com.port.myport.service;
 import com.port.myport.domain.TaskHistory;
 import com.port.myport.domain.TaskStatus;
 import com.port.myport.domain.User;
+import com.port.myport.domain.UserRole;
 import com.port.myport.domain.WorkTask;
 import com.port.myport.dto.*;
 import com.port.myport.repository.TaskHistoryRepository;
@@ -28,7 +29,7 @@ public class WorkTaskService {
     public Long createTask(WorkTaskCreateRequest request) {
         User creator = userRepository.findById(request.getCreatedBy())
                 .orElseThrow(() -> new IllegalArgumentException("User not found: " + request.getCreatedBy()));
-
+        validateManagerOrAdmin(creator);
         User assignee = null;
         if (request.getAssignedTo() != null) {
             assignee = userRepository.findById(request.getAssignedTo())
@@ -62,6 +63,12 @@ public class WorkTaskService {
         return savedTask.getId();
     }
 
+    private void validateManagerOrAdmin(User user) {
+        if (user.getRole() != UserRole.ADMIN && user.getRole() != UserRole.MANAGER) {
+            throw new IllegalArgumentException("Only ADMIN or MANAGER can perform this action.");
+        }
+    }
+
     @Transactional(readOnly = true)
     public WorkTaskResponse findTask(Long taskId) {
         WorkTask task = workTaskRepository.findById(taskId)
@@ -92,6 +99,7 @@ public class WorkTaskService {
 
         User manager = userRepository.findById(request.getManagerId())
                 .orElseThrow(() -> new IllegalArgumentException("User not found: " + request.getManagerId()));
+        validateManagerOrAdmin(manager);
         if (task.getStatus() != TaskStatus.CREATED) {
             throw new IllegalArgumentException("Only CREATED tasks can be assigned.");
         }
@@ -121,7 +129,7 @@ public class WorkTaskService {
 
         User changedBy = userRepository.findById(request.getChangedBy())
                 .orElseThrow(() -> new IllegalArgumentException("User not found: " + request.getChangedBy()));
-
+        validateAssignedUser(task, changedBy);
         TaskStatus beforeStatus = task.getStatus();
 
         TaskStatus status = request.getStatus();
@@ -141,6 +149,13 @@ public class WorkTaskService {
         taskHistoryRepository.save(history);
     }
 
+    private void validateAssignedUser(WorkTask task, User changedBy) {
+        if (task.getAssignedTo() == null ||
+                !task.getAssignedTo().getUserId().equals(changedBy.getUserId())) {
+            throw new IllegalArgumentException("Only assigned user can change task status.");
+        }
+    }
+
     @Transactional
     public void approveTask(Long taskId, TaskReviewRequest request) {
         reviewTask(taskId, request, TaskStatus.APPROVED);
@@ -156,6 +171,7 @@ public class WorkTaskService {
                 .orElseThrow(() -> new IllegalArgumentException("Task not found: " + taskId));
         User reviewer = userRepository.findById(request.getReviewerId())
                 .orElseThrow(() -> new IllegalArgumentException("User not found: " + request.getReviewerId()));
+        validateManagerOrAdmin(reviewer);
         if (task.getStatus() != TaskStatus.SUBMITTED) {
             throw new IllegalArgumentException("Only SUBMITTED tasks can be reviewed.");
         }

@@ -94,3 +94,28 @@ GET http://localhost:8080/tasks?keyword=report&page=0&size=10
 
 ###
 GET http://localhost:8080/tasks?dueDateFrom=2026-07-01&dueDateTo=2026-07-31&page=0&size=10
+
+###
+
+POST http://localhost:8080/tasks
+Content-Type: application/json
+
+{
+  "title": "Test",
+  "content": "Permission test",
+  "priority": "HIGH",
+  "dueDate": "2026-07-31",
+  "createdBy": "user01",
+  "assignedTo": "user01"
+}
+
+###
+
+PATCH http://localhost:8080/tasks/1/status
+Content-Type: application/json
+
+{
+  "status": "IN_PROGRESS",
+  "changedBy": "manager01",
+  "comment": "Try status change"
+}
