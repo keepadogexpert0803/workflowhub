@@ -4,6 +4,7 @@ import com.port.myport.domain.TaskStatus;
 import com.port.myport.domain.WorkTask;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -13,6 +14,7 @@ import java.time.LocalDate;
 
 @Repository
 public interface WorkTaskRepository extends JpaRepository<WorkTask, Long> {
+    @EntityGraph(attributePaths = {"createdBy", "assignedTo"})
     @Query("""
         select t
         from WorkTask t

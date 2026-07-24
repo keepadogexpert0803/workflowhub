@@ -85,6 +85,7 @@ Content-Type: application/json
 GET http://localhost:8080/tasks/1/histories
 ###
 GET http://localhost:8080/tasks?status=ASSIGNED&page=0&size=10
+
 ###
 GET http://localhost:8080/tasks?assignedTo=user01&page=0&size=10
 ###
@@ -119,3 +120,6 @@ Content-Type: application/json
   "changedBy": "manager01",
   "comment": "Try status change"
 }
+
+###
+GET http://localhost:8080/tasks?status=ASSIGNED&page=0&size=10
