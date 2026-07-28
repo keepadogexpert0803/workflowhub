@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Task Detail</title>
+</head>
+<body>
+<h1>Task Detail</h1>
+
+<a href="/tasks/page">Back to List</a>
+
+<h2>Task Info</h2>
+<table border="1">
+    <tr>
+        <th>ID</th>
+        <td th:text="${task.id}"></td>
+    </tr>
+    <tr>
+        <th>Title</th>
+        <td th:text="${task.title}"></td>
+    </tr>
+    <tr>
+        <th>Content</th>
+        <td th:text="${task.content}"></td>
+    </tr>
+    <tr>
+        <th>Status</th>
+        <td th:text="${task.status}"></td>
+    </tr>
+    <tr>
+        <th>Priority</th>
+        <td th:text="${task.priority}"></td>
+    </tr>
+    <tr>
+        <th>Created By</th>
+        <td th:text="${task.createdBy}"></td>
+    </tr>
+    <tr>
+        <th>Assigned To</th>
+        <td th:text="${task.assignedTo}"></td>
+    </tr>
+    <tr>
+        <th>Due Date</th>
+        <td th:text="${task.dueDate}"></td>
+    </tr>
+    <tr>
+        <th>Created At</th>
+        <td th:text="${task.createdAt}"></td>
+    </tr>
+    <tr>
+        <th>Updated At</th>
+        <td th:text="${task.updatedAt}"></td>
+    </tr>
+</table>
+
+<h2>History</h2>
+<table border="1">
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th>Before</th>
+        <th>After</th>
+        <th>Changed By</th>
+        <th>Comment</th>
+        <th>Created At</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="history : ${histories}">
+        <td th:text="${history.id}"></td>
+        <td th:text="${history.beforeStatus}"></td>
+        <td th:text="${history.afterStatus}"></td>
+        <td th:text="${history.changedBy}"></td>
+        <td th:text="${history.comment}"></td>
+        <td th:text="${history.createdAt}"></td>
+    </tr>
+    </tbody>
+</table>
+
+</body>
+</html>

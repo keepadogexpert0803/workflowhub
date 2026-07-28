@@ -77,16 +77,24 @@ public class WorkTaskService {
     }
 
     @Transactional(readOnly = true)
-    public Page<WorkTaskResponse> findTasks(WorkTaskSearchCondition condition , Pageable pageable) {
+    public Page<WorkTaskResponse> findTasks(WorkTaskSearchCondition condition, Pageable pageable) {
+        String assignedTo = blankToNull(condition.getAssignedTo());
+        String createdBy = blankToNull(condition.getCreatedBy());
+        String keyword = blankToNull(condition.getKeyword());
+
         return workTaskRepository.searchTasks(
                 condition.getStatus(),
-                condition.getAssignedTo(),
-                condition.getCreatedBy(),
-                condition.getKeyword(),
+                assignedTo,
+                createdBy,
+                keyword,
                 condition.getDueDateFrom(),
                 condition.getDueDateTo(),
                 pageable
         ).map(WorkTaskResponse::from);
+    }
+
+    private String blankToNull(String value) {
+        return value == null || value.isBlank() ? null : value;
     }
 
     @Transactional

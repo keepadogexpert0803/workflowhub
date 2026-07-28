@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Task List</title>
+</head>
+<body>
+<h1>Task List</h1>
+
+<form method="get" action="/tasks/page">
+    <select name="status">
+        <option value="">전체</option>
+        <option value="CREATED" th:selected="${condition.status?.name() == 'CREATED'}">CREATED</option>
+        <option value="ASSIGNED" th:selected="${condition.status?.name() == 'ASSIGNED'}">ASSIGNED</option>
+        <option value="IN_PROGRESS" th:selected="${condition.status?.name() == 'IN_PROGRESS'}">IN_PROGRESS</option>
+        <option value="SUBMITTED" th:selected="${condition.status?.name() == 'SUBMITTED'}">SUBMITTED</option>
+        <option value="APPROVED" th:selected="${condition.status?.name() == 'APPROVED'}">APPROVED</option>
+        <option value="REJECTED" th:selected="${condition.status?.name() == 'REJECTED'}">REJECTED</option>
+    </select>
+
+    <input type="text" name="assignedTo" th:value="${condition.assignedTo}" placeholder="assignedTo">
+    <input type="text" name="keyword" th:value="${condition.keyword}" placeholder="keyword">
+
+    <button type="submit">Search</button>
+    <a href="/tasks/page">Reset</a>
+    <a href="/tasks/page/new">New Task</a>
+</form>
+
+<table border="1">
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th>Title</th>
+        <th>Status</th>
+        <th>Priority</th>
+        <th>Created By</th>
+        <th>Assigned To</th>
+        <th>Due Date</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="task : ${tasks.content}">
+        <td th:text="${task.id}"></td>
+        <td>
+            <a th:href="@{/tasks/page/{id}(id=${task.id})}"
+               th:text="${task.title}"></a>
+        </td>
+        <td th:text="${task.status}"></td>
+        <td th:text="${task.priority}"></td>
+        <td th:text="${task.createdBy}"></td>
+        <td th:text="${task.assignedTo}"></td>
+        <td th:text="${task.dueDate}"></td>
+    </tr>
+    </tbody>
+</table>
+
+</body>
+</html>
