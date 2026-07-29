@@ -9,6 +9,79 @@
 
 <a href="/tasks/page">Back to List</a>
 
+<div th:if="${task.status.name() == 'CREATED'}">
+    <h2>Assign Task</h2>
+    <form method="post" th:action="@{/tasks/page/{id}/assign(id=${task.id})}">
+        <div>
+            <label>Assignee ID</label>
+            <input type="text" name="assigneeId" th:value="${task.assignedTo}" required>
+        </div>
+
+        <div>
+            <label>Manager ID</label>
+            <input type="text" name="managerId" value="manager01" required>
+        </div>
+
+        <div>
+            <label>Comment</label>
+            <input type="text" name="comment" value="Assign task">
+        </div>
+
+        <button type="submit">Assign</button>
+    </form>
+</div>
+
+<div th:if="${task.status.name() == 'ASSIGNED' or task.status.name() == 'IN_PROGRESS'}">
+    <h2>Change Status</h2>
+    <form method="post" th:action="@{/tasks/page/{id}/status(id=${task.id})}">
+        <div>
+            <label>Status</label>
+            <select name="status" required>
+                <option value="IN_PROGRESS" th:if="${task.status.name() == 'ASSIGNED'}">IN_PROGRESS</option>
+                <option value="SUBMITTED" th:if="${task.status.name() == 'IN_PROGRESS'}">SUBMITTED</option>
+            </select>
+        </div>
+
+        <div>
+            <label>Changed By</label>
+            <input type="text" name="changedBy" th:value="${task.assignedTo}" required>
+        </div>
+
+        <div>
+            <label>Comment</label>
+            <input type="text" name="comment" value="Status changed">
+        </div>
+
+        <button type="submit">Change Status</button>
+    </form>
+</div>
+
+<div th:if="${task.status.name() == 'SUBMITTED'}">
+    <h2>Review Task</h2>
+
+    <form method="post">
+        <div>
+            <label>Reviewer ID</label>
+            <input type="text" name="reviewerId" value="manager01" required>
+        </div>
+
+        <div>
+            <label>Comment</label>
+            <input type="text" name="comment" value="Review completed">
+        </div>
+
+        <button type="submit"
+                th:formaction="@{/tasks/page/{id}/approve(id=${task.id})}">
+            Approve
+        </button>
+
+        <button type="submit"
+                th:formaction="@{/tasks/page/{id}/reject(id=${task.id})}">
+            Reject
+        </button>
+    </form>
+</div>
+
 <h2>Task Info</h2>
 <table border="1">
     <tr>

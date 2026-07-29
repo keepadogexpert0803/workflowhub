@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>New Task</title>
+</head>
+<body>
+<h1>New Task</h1>
+
+<a href="/tasks/page">Back to List</a>
+
+<form method="post" action="/tasks/page">
+    <div>
+        <label>Title</label>
+        <input type="text" name="title" required>
+    </div>
+
+    <div>
+        <label>Content</label>
+        <textarea name="content"></textarea>
+    </div>
+
+    <div>
+        <label>Priority</label>
+        <select name="priority" required>
+            <option value="LOW">LOW</option>
+            <option value="MEDIUM">MEDIUM</option>
+            <option value="HIGH">HIGH</option>
+        </select>
+    </div>
+
+    <div>
+        <label>Due Date</label>
+        <input type="date" name="dueDate">
+    </div>
+
+    <div>
+        <label>Created By</label>
+        <input type="text" name="createdBy" value="manager01" required>
+    </div>
+
+    <div>
+        <label>Assigned To</label>
+        <input type="text" name="assignedTo" value="user01">
+    </div>
+
+    <button type="submit">Create</button>
+</form>
+
+</body>
+</html>

@@ -1,5 +1,8 @@
 package com.port.myport.controller;
 
+import com.port.myport.dto.TaskAssignRequest;
+import com.port.myport.dto.TaskReviewRequest;
+import com.port.myport.dto.TaskStatusChangeRequest;
 import com.port.myport.dto.WorkTaskCreateRequest;
 import com.port.myport.dto.WorkTaskSearchCondition;
 import com.port.myport.service.WorkTaskService;
@@ -9,6 +12,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
@@ -40,5 +44,35 @@ public class WorkTaskPageController {
     public String createForm(Model model) {
         model.addAttribute("request", new WorkTaskCreateRequest());
         return "task/new";
+    }
+
+    @PostMapping("/page")
+    public String createTask(WorkTaskCreateRequest request) {
+        workTaskService.createTask(request);
+        return "redirect:/tasks/page";
+    }
+
+    @PostMapping("/page/{taskId}/status")
+    public String changeStatus(@PathVariable Long taskId, TaskStatusChangeRequest request) {
+        workTaskService.changeStatus(taskId, request);
+        return "redirect:/tasks/page/" + taskId;
+    }
+
+    @PostMapping("/page/{taskId}/assign")
+    public String assignTask(@PathVariable Long taskId, TaskAssignRequest request) {
+        workTaskService.assignTask(taskId, request);
+        return "redirect:/tasks/page/" + taskId;
+    }
+
+    @PostMapping("/page/{taskId}/approve")
+    public String approveTask(@PathVariable Long taskId, TaskReviewRequest request) {
+        workTaskService.approveTask(taskId, request);
+        return "redirect:/tasks/page/" + taskId;
+    }
+
+    @PostMapping("/page/{taskId}/reject")
+    public String rejectTask(@PathVariable Long taskId, TaskReviewRequest request) {
+        workTaskService.rejectTask(taskId, request);
+        return "redirect:/tasks/page/" + taskId;
     }
 }
