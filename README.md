@@ -55,6 +55,20 @@
 - 업무 승인/반려
 - 업무 상태 변경 이력 조회
 
+### 화면 기능
+
+백엔드 API만으로 끝내지 않고, 기능 흐름을 브라우저에서 확인할 수 있도록 Thymeleaf 화면을 추가했습니다.
+
+- 로그인 화면
+- 회원가입 화면
+- 관리자 업무 현황 대시보드
+- 업무 목록/검색/페이징 화면
+- 업무 상세 및 이력 조회 화면
+- 업무 생성 화면
+- 상세 화면에서 업무 배정, 상태 변경, 승인/반려 처리
+
+화면은 포트폴리오 시연 목적의 단순 관리 화면입니다. 프론트엔드 완성도보다는 Spring MVC에서 Controller가 Model에 데이터를 담고 Thymeleaf가 이를 출력하는 흐름을 확인하는 데 초점을 두었습니다.
+
 ### 업무 상태
 
 업무 상태는 아래 값으로 관리합니다.
@@ -98,7 +112,7 @@ USER
 | MANAGER | 업무 생성, 배정, 승인, 반려 |
 | USER | 본인에게 배정된 업무 상태 변경 |
 
-현재 프로젝트는 Spring Security 인증까지 붙인 구조는 아닙니다. 대신 요청 DTO에 포함된 사용자 ID로 `User` 엔티티를 조회하고, 해당 사용자의 `role` 값을 기준으로 권한을 검증합니다.
+현재 프로젝트는 Spring Security 인증까지 붙인 구조는 아닙니다. 대신 API 요청 DTO 또는 화면 세션에 포함된 사용자 ID로 `User` 엔티티를 조회하고, 해당 사용자의 `role` 값을 기준으로 권한을 검증합니다.
 
 예를 들어 업무 생성 시 `createdBy` 사용자가 `ADMIN` 또는 `MANAGER`가 아니면 예외가 발생합니다.
 
@@ -207,6 +221,18 @@ task.getAssignedTo().getUserId()
 
 테스트는 기존 DB 데이터에 의존하지 않고, 테스트 안에서 필요한 사용자와 업무를 직접 생성한 뒤 검증하도록 작성했습니다.
 
+### 7. 시연용 로그인/회원가입
+
+Spring Security를 적용하지 않고, 학습 범위에 맞춰 `HttpSession` 기반의 간단한 로그인/로그아웃 흐름을 구현했습니다.
+
+- 회원가입 시 `TB_USER`에 사용자 저장
+- 로그인 시 사용자 ID와 비밀번호 확인
+- 로그인 성공 시 세션에 `loginUserId`, `loginUserRole` 저장
+- 업무 화면에서 로그인 사용자 표시
+- 업무 생성/배정/승인 폼에서 로그인 사용자 ID를 기본값으로 사용
+
+이 기능은 보안 구현이 목적이 아니라, 화면에서 사용자 흐름을 시연하기 위한 보조 기능입니다.
+
 ## API 명세
 
 ### 업무 API
@@ -221,6 +247,25 @@ task.getAssignedTo().getUserId()
 | 업무 승인 | PATCH | `/tasks/{taskId}/approve` |
 | 업무 반려 | PATCH | `/tasks/{taskId}/reject` |
 | 업무 이력 조회 | GET | `/tasks/{taskId}/histories` |
+
+### 화면 URL
+
+| 기능 | Method | URL |
+|---|---|---|
+| 로그인 화면 | GET | `/login` |
+| 로그인 처리 | POST | `/login` |
+| 로그아웃 | POST | `/logout` |
+| 회원가입 화면 | GET | `/users/register` |
+| 회원가입 처리 | POST | `/users/register` |
+| 관리자 현황 | GET | `/tasks/admin` |
+| 업무 목록 화면 | GET | `/tasks/page` |
+| 업무 상세 화면 | GET | `/tasks/page/{taskId}` |
+| 업무 생성 화면 | GET | `/tasks/page/new` |
+| 업무 생성 처리 | POST | `/tasks/page` |
+| 화면 업무 배정 | POST | `/tasks/page/{taskId}/assign` |
+| 화면 상태 변경 | POST | `/tasks/page/{taskId}/status` |
+| 화면 업무 승인 | POST | `/tasks/page/{taskId}/approve` |
+| 화면 업무 반려 | POST | `/tasks/page/{taskId}/reject` |
 
 ### 업무 생성 요청
 
@@ -354,6 +399,34 @@ User Name: sa
 Password:
 ```
 
+브라우저에서 확인할 수 있는 주요 화면:
+
+```text
+http://localhost:8080/login
+http://localhost:8080/tasks/admin
+http://localhost:8080/tasks/page
+http://localhost:8080/tasks/page/new
+```
+
+시연용 기본 계정 예시:
+
+```text
+manager01 / 1234
+user01 / 1234
+```
+
+## 시연 흐름
+
+아래 순서로 실행하면 프로젝트의 핵심 기능을 한 번에 확인할 수 있습니다.
+
+1. `/login`에서 매니저 계정으로 로그인
+2. `/tasks/page/new`에서 업무 생성
+3. 업무 상세 화면에서 담당자 배정
+4. 담당자 계정으로 로그인 후 상태를 `IN_PROGRESS`, `SUBMITTED`로 변경
+5. 매니저 계정으로 다시 로그인 후 승인 또는 반려
+6. 업무 상세 화면에서 `TaskHistory` 이력 확인
+7. `/tasks/admin`에서 전체 현황 확인
+
 ## 테스트 실행
 
 Windows:
@@ -384,9 +457,18 @@ Spring Data JPA 페이징에는 `org.springframework.data.domain.Pageable`을 �
 
 Repository 조회 메서드에 `@EntityGraph(attributePaths = {"createdBy", "assignedTo"})`를 적용해 목록 조회 시 필요한 사용자 엔티티를 함께 조회하도록 개선했습니다.
 
+### 4. 화면 검색 조건 유지
+
+업무 목록 화면은 검색 조건을 URL 쿼리 파라미터로 전달하는 GET 방식으로 구성했습니다.
+
+```text
+/tasks/page?status=REJECTED&assignedTo=user01&keyword=report
+```
+
+검색 조건을 `WorkTaskSearchCondition` DTO로 받고, Controller에서 다시 Model에 담아 Thymeleaf 화면에 전달하여 선택한 검색값이 유지되도록 처리했습니다.
+
 ## 이후 보완 예정
 
-- 관리자 화면
-- 업무 현황 대시보드
-- 업무 목록/상세 Thymeleaf 페이지
 - README에 화면 캡처 추가
+- 테스트 케이스 추가
+- Spring Security 적용 검토
