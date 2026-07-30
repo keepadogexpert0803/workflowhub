@@ -9,6 +9,15 @@
 
 <a href="/tasks/page">Back to List</a>
 
+<div>
+    <span>Login User: </span>
+    <strong th:text="${loginUserId != null ? loginUserId : 'guest'}"></strong>
+    <a th:if="${loginUserId == null}" href="/login">Login</a>
+    <form th:if="${loginUserId != null}" method="post" action="/logout" style="display:inline">
+        <button type="submit">Logout</button>
+    </form>
+</div>
+
 <form method="post" action="/tasks/page">
     <div>
         <label>Title</label>
@@ -36,12 +45,18 @@
 
     <div>
         <label>Created By</label>
-        <input type="text" name="createdBy" value="manager01" required>
+        <input type="text" name="createdBy" th:value="${loginUserId != null ? loginUserId : 'manager01'}" required>
     </div>
 
     <div>
         <label>Assigned To</label>
-        <input type="text" name="assignedTo" value="user01">
+        <select name="assignedTo">
+            <option value="">None</option>
+            <option th:each="user : ${users}"
+                    th:value="${user.userId}"
+                    th:text="${user.userId}">
+            </option>
+        </select>
     </div>
 
     <button type="submit">Create</button>

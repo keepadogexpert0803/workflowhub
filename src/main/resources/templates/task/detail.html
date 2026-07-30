@@ -9,17 +9,33 @@
 
 <a href="/tasks/page">Back to List</a>
 
+<div>
+    <span>Login User: </span>
+    <strong th:text="${loginUserId != null ? loginUserId : 'guest'}"></strong>
+    <a th:if="${loginUserId == null}" href="/login">Login</a>
+    <form th:if="${loginUserId != null}" method="post" action="/logout" style="display:inline">
+        <button type="submit">Logout</button>
+    </form>
+</div>
+
 <div th:if="${task.status.name() == 'CREATED'}">
     <h2>Assign Task</h2>
     <form method="post" th:action="@{/tasks/page/{id}/assign(id=${task.id})}">
         <div>
             <label>Assignee ID</label>
-            <input type="text" name="assigneeId" th:value="${task.assignedTo}" required>
+            <select name="assigneeId">
+                <option value="">None</option>
+                <option th:each="user : ${users}"
+                        th:value="${user.userId}"
+                        th:text="${user.userId}"
+                        th:selected="${user.userId == task.assignedTo}">
+                </option>
+            </select>
         </div>
 
         <div>
             <label>Manager ID</label>
-            <input type="text" name="managerId" value="manager01" required>
+            <input type="text" name="managerId" th:value="${loginUserId != null ? loginUserId : 'manager01'}" required>
         </div>
 
         <div>
@@ -44,7 +60,7 @@
 
         <div>
             <label>Changed By</label>
-            <input type="text" name="changedBy" th:value="${task.assignedTo}" required>
+            <input type="text" name="changedBy" th:value="${loginUserId != null ? loginUserId : task.assignedTo}" required>
         </div>
 
         <div>
@@ -62,7 +78,7 @@
     <form method="post">
         <div>
             <label>Reviewer ID</label>
-            <input type="text" name="reviewerId" value="manager01" required>
+            <input type="text" name="reviewerId" th:value="${loginUserId != null ? loginUserId : 'manager01'}" required>
         </div>
 
         <div>

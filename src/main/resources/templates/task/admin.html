@@ -80,8 +80,13 @@
 <header>
     <h1>Task Dashboard</h1>
     <div class="actions">
+        <span>Login User: <strong th:text="${loginUserId != null ? loginUserId : 'guest'}"></strong></span>
+        <a th:if="${loginUserId == null}" href="/login">Login</a>
         <a href="/tasks/page">Task List</a>
         <a href="/tasks/page/new">New Task</a>
+        <form th:if="${loginUserId != null}" method="post" action="/logout">
+            <button type="submit">Logout</button>
+        </form>
     </div>
 </header>
 

@@ -7,9 +7,18 @@
 <body>
 <h1>Task List</h1>
 
+<div>
+    <span>Login User: </span>
+    <strong th:text="${loginUserId != null ? loginUserId : 'guest'}"></strong>
+    <a th:if="${loginUserId == null}" href="/login">Login</a>
+    <form th:if="${loginUserId != null}" method="post" action="/logout" style="display:inline">
+        <button type="submit">Logout</button>
+    </form>
+</div>
+
 <form method="get" action="/tasks/page">
     <select name="status">
-        <option value="">전체</option>
+        <option value="">ALL</option>
         <option value="CREATED" th:selected="${condition.status?.name() == 'CREATED'}">CREATED</option>
         <option value="ASSIGNED" th:selected="${condition.status?.name() == 'ASSIGNED'}">ASSIGNED</option>
         <option value="IN_PROGRESS" th:selected="${condition.status?.name() == 'IN_PROGRESS'}">IN_PROGRESS</option>
@@ -24,6 +33,7 @@
     <button type="submit">Search</button>
     <a href="/tasks/page">Reset</a>
     <a href="/tasks/page/new">New Task</a>
+    <a href="/tasks/admin">Dashboard</a>
 </form>
 
 <table border="1">

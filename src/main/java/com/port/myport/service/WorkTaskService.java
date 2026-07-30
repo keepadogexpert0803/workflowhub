@@ -31,10 +31,11 @@ public class WorkTaskService {
         User creator = userRepository.findById(request.getCreatedBy())
                 .orElseThrow(() -> new IllegalArgumentException("User not found: " + request.getCreatedBy()));
         validateManagerOrAdmin(creator);
+        String assignedTo = blankToNull(request.getAssignedTo());
         User assignee = null;
-        if (request.getAssignedTo() != null) {
-            assignee = userRepository.findById(request.getAssignedTo())
-                    .orElseThrow(() -> new IllegalArgumentException("User not found: " + request.getAssignedTo()));
+        if (assignedTo != null) {
+            assignee = userRepository.findById(assignedTo)
+                    .orElseThrow(() -> new IllegalArgumentException("User not found: " + assignedTo));
         }
 
         LocalDateTime now = LocalDateTime.now();
@@ -103,8 +104,13 @@ public class WorkTaskService {
         WorkTask task = workTaskRepository.findById(taskId)
                 .orElseThrow(() -> new IllegalArgumentException("Task not found: " + taskId));
 
-        User assignee = userRepository.findById(request.getAssigneeId())
-                .orElseThrow(() -> new IllegalArgumentException("User not found: " + request.getAssigneeId()));
+        String assigneeId = blankToNull(request.getAssigneeId());
+        if (assigneeId == null) {
+            throw new IllegalArgumentException("Assignee is required.");
+        }
+
+        User assignee = userRepository.findById(assigneeId)
+                .orElseThrow(() -> new IllegalArgumentException("User not found: " + assigneeId));
 
         User manager = userRepository.findById(request.getManagerId())
                 .orElseThrow(() -> new IllegalArgumentException("User not found: " + request.getManagerId()));
