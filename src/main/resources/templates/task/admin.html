@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Task Dashboard</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 32px;
+            color: #222;
+            background: #f7f8fa;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+        }
+
+        a {
+            color: #1f5fbf;
+            text-decoration: none;
+        }
+
+        .actions {
+            display: flex;
+            gap: 12px;
+        }
+
+        .summary {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 12px;
+            margin-bottom: 28px;
+        }
+
+        .metric {
+            padding: 16px;
+            border: 1px solid #d9dee7;
+            border-radius: 6px;
+            background: #fff;
+        }
+
+        .metric span {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 13px;
+            color: #606875;
+        }
+
+        .metric strong {
+            font-size: 26px;
+        }
+
+        section {
+            margin-bottom: 28px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: #fff;
+        }
+
+        th,
+        td {
+            padding: 10px 12px;
+            border: 1px solid #d9dee7;
+            text-align: left;
+            font-size: 14px;
+        }
+
+        th {
+            background: #eef1f5;
+        }
+    </style>
+</head>
+<body>
+<header>
+    <h1>Task Dashboard</h1>
+    <div class="actions">
+        <a href="/tasks/page">Task List</a>
+        <a href="/tasks/page/new">New Task</a>
+    </div>
+</header>
+
+<section>
+    <h2>Status Summary</h2>
+    <div class="summary">
+        <div class="metric">
+            <span>Total</span>
+            <strong th:text="${totalCount}"></strong>
+        </div>
+        <div class="metric">
+            <span>CREATED</span>
+            <strong th:text="${createdCount}"></strong>
+        </div>
+        <div class="metric">
+            <span>ASSIGNED</span>
+            <strong th:text="${assignedCount}"></strong>
+        </div>
+        <div class="metric">
+            <span>IN_PROGRESS</span>
+            <strong th:text="${inProgressCount}"></strong>
+        </div>
+        <div class="metric">
+            <span>SUBMITTED</span>
+            <strong th:text="${submittedCount}"></strong>
+        </div>
+        <div class="metric">
+            <span>APPROVED</span>
+            <strong th:text="${approvedCount}"></strong>
+        </div>
+        <div class="metric">
+            <span>REJECTED</span>
+            <strong th:text="${rejectedCount}"></strong>
+        </div>
+    </div>
+</section>
+
+<section>
+    <h2>Upcoming Tasks</h2>
+    <table>
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>Title</th>
+            <th>Status</th>
+            <th>Priority</th>
+            <th>Assigned To</th>
+            <th>Due Date</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="task : ${upcomingTasks}">
+            <td th:text="${task.id}"></td>
+            <td>
+                <a th:href="@{/tasks/page/{id}(id=${task.id})}" th:text="${task.title}"></a>
+            </td>
+            <td th:text="${task.status}"></td>
+            <td th:text="${task.priority}"></td>
+            <td th:text="${task.assignedTo}"></td>
+            <td th:text="${task.dueDate}"></td>
+        </tr>
+        <tr th:if="${#lists.isEmpty(upcomingTasks)}">
+            <td colspan="6">No upcoming tasks.</td>
+        </tr>
+        </tbody>
+    </table>
+</section>
+
+<section>
+    <h2>Recent Histories</h2>
+    <table>
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>Task ID</th>
+            <th>Before</th>
+            <th>After</th>
+            <th>Changed By</th>
+            <th>Comment</th>
+            <th>Created At</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="history : ${recentHistories}">
+            <td th:text="${history.id}"></td>
+            <td>
+                <a th:href="@{/tasks/page/{id}(id=${history.taskId})}" th:text="${history.taskId}"></a>
+            </td>
+            <td th:text="${history.beforeStatus}"></td>
+            <td th:text="${history.afterStatus}"></td>
+            <td th:text="${history.changedBy}"></td>
+            <td th:text="${history.comment}"></td>
+            <td th:text="${history.createdAt}"></td>
+        </tr>
+        <tr th:if="${#lists.isEmpty(recentHistories)}">
+            <td colspan="7">No histories.</td>
+        </tr>
+        </tbody>
+    </table>
+</section>
+</body>
+</html>

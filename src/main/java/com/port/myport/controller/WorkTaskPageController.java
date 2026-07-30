@@ -1,5 +1,6 @@
 package com.port.myport.controller;
 
+import com.port.myport.domain.TaskStatus;
 import com.port.myport.dto.TaskAssignRequest;
 import com.port.myport.dto.TaskReviewRequest;
 import com.port.myport.dto.TaskStatusChangeRequest;
@@ -23,6 +24,15 @@ public class WorkTaskPageController {
 
     @GetMapping("/admin")
     public String admin(Model model) {
+        model.addAttribute("totalCount", workTaskService.countTasks());
+        model.addAttribute("createdCount", workTaskService.countByStatus(TaskStatus.CREATED));
+        model.addAttribute("assignedCount", workTaskService.countByStatus(TaskStatus.ASSIGNED));
+        model.addAttribute("inProgressCount", workTaskService.countByStatus(TaskStatus.IN_PROGRESS));
+        model.addAttribute("submittedCount", workTaskService.countByStatus(TaskStatus.SUBMITTED));
+        model.addAttribute("approvedCount", workTaskService.countByStatus(TaskStatus.APPROVED));
+        model.addAttribute("rejectedCount", workTaskService.countByStatus(TaskStatus.REJECTED));
+        model.addAttribute("recentHistories", workTaskService.findRecentHistories());
+        model.addAttribute("upcomingTasks", workTaskService.findUpcomingTasks());
         return "task/admin";
     }
 

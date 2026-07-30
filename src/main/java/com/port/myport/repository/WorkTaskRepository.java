@@ -11,6 +11,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @Repository
 public interface WorkTaskRepository extends JpaRepository<WorkTask, Long> {
@@ -34,5 +35,13 @@ public interface WorkTaskRepository extends JpaRepository<WorkTask, Long> {
             @Param("dueDateFrom") LocalDate dueDateFrom,
             @Param("dueDateTo") LocalDate dueDateTo,
             Pageable pageable
+    );
+
+    long countByStatus(TaskStatus status);
+
+    @EntityGraph(attributePaths = {"createdBy", "assignedTo"})
+    List<WorkTask> findTop5ByDueDateGreaterThanEqualAndStatusNotInOrderByDueDateAsc(
+            LocalDate dueDate,
+            List<TaskStatus> statuses
     );
 }

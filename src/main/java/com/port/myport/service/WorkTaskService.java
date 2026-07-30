@@ -15,6 +15,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -217,6 +218,35 @@ public class WorkTaskService {
         return taskHistoryRepository.findByTask_IdOrderByCreatedAtAsc(taskId)
                 .stream()
                 .map(TaskHistoryResponse::from)
+                .toList();
+    }
+
+    @Transactional(readOnly = true)
+    public long countTasks() {
+        return workTaskRepository.count();
+    }
+
+    @Transactional(readOnly = true)
+    public long countByStatus(TaskStatus status) {
+        return workTaskRepository.countByStatus(status);
+    }
+
+    @Transactional(readOnly = true)
+    public List<TaskHistoryResponse> findRecentHistories() {
+        return taskHistoryRepository.findTop5ByOrderByCreatedAtDesc()
+                .stream()
+                .map(TaskHistoryResponse::from)
+                .toList();
+    }
+
+    @Transactional(readOnly = true)
+    public List<WorkTaskResponse> findUpcomingTasks() {
+        return workTaskRepository.findTop5ByDueDateGreaterThanEqualAndStatusNotInOrderByDueDateAsc(
+                        LocalDate.now(),
+                        List.of(TaskStatus.APPROVED, TaskStatus.REJECTED)
+                )
+                .stream()
+                .map(WorkTaskResponse::from)
                 .toList();
     }
 
